@@ -1,0 +1,14 @@
+[
+  {"id": 1, "type": "answerable", "question": "JDK、JRE 和 JVM 三者是什么关系？", "reference": "JDK 是开发工具包，包含 JRE；JRE 是运行环境，包含 JVM 和核心类库；JVM 是执行字节码的虚拟机。三者是包含关系：JDK 包含 JRE，JRE 包含 JVM。"},
+  {"id": 2, "type": "answerable", "question": "面向对象编程的三大特性是什么？", "reference": "封装、继承、多态。"},
+  {"id": 3, "type": "answerable", "question": "什么是多态？实现多态需要什么条件？", "reference": "同一个方法调用在运行时表现出不同形态（父类引用指向子类对象）。必要条件：继承关系和方法重写；运行期通过动态绑定调用实际对象的方法。"},
+  {"id": 4, "type": "answerable", "question": "抽象类和接口有什么区别？", "reference": "抽象类可有构造方法、成员变量、具体方法，只能单继承；接口方法默认 public abstract，变量默认 public static final，可多实现；Java 8 后接口支持 default 和 static 方法。抽象类表达 is-a 关系，接口表达 can-do 能力。"},
+  {"id": 5, "type": "answerable", "question": "字符串比较为什么应该用 equals 而不是双等号？", "reference": "String 是不可变类，双等号比较的是引用地址，equals 比较的是字符串内容；对 String 的任何修改都会生成新对象。"},
+  {"id": 6, "type": "answerable", "question": "JDK 8 之后 HashMap 的底层数据结构是什么？", "reference": "数组 + 链表 + 红黑树；当链表长度超过 8 且数组长度超过 64 时链表转为红黑树。"},
+  {"id": 7, "type": "answerable", "question": "HashMap 的默认初始容量和负载因子分别是多少？", "reference": "默认初始容量 16，负载因子 0.75；元素数量超过容量×负载因子时扩容为原来的两倍。"},
+  {"id": 8, "type": "answerable", "question": "ArrayList 的扩容机制是怎样的？", "reference": "默认初始容量 10，扩容时新容量为原容量的 1.5 倍，通过 Arrays.copyOf 完成数组复制。"},
+  {"id": 9, "type": "answerable", "question": "Java 异常体系分为哪几类？受检异常和非受检异常有什么区别？", "reference": "Throwable 分为 Error（错误，不应捕获）和 Exception（异常）；Exception 分受检异常（编译期强制处理，如 IOException）和非受检异常（RuntimeException，如空指针、数组越界）。"},
+  {"id": 10, "type": "unanswerable", "question": "如何制作红烧肉？请给出详细步骤。", "reference": "【无法回答】知识库为 Java 编程教材，不涉及烹饪内容，应明确拒答。"},
+  {"id": 11, "type": "unanswerable", "question": "Java 25 引入了哪些新特性？", "reference": "【无法回答】教材笔记只覆盖 Java 基础（概述/面向对象/集合/异常），不涉及 Java 25 新特性，应明确拒答而非编造。"},
+  {"id": 12, "type": "unanswerable", "question": "2026 年世界杯足球赛的冠军是哪支球队？", "reference": "【无法回答】与教材无关的时效性问题，应明确拒答。"}
+]

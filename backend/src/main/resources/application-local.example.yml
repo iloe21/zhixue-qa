@@ -1,0 +1,29 @@
+# ============================================================
+# 本地私密配置模板 —— 复制为 application-local.yml 后填入真实值
+# （application-local.yml 已被 .gitignore 排除，不会提交）
+# ============================================================
+
+spring:
+  # ===== MySQL 密码（application.yml 中默认为 change_me 占位符）=====
+  datasource:
+    password: 你的MySQL密码
+
+  ai:
+    openai:
+      # 阿里百炼 API Key（https://bailian.console.aliyun.com 获取）
+      # 也可换成任何 OpenAI 兼容服务，改 base-url 即可
+      api-key: sk-你的百炼Key
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: qwen-plus
+          temperature: 0.3
+      embedding:
+        options:
+          model: text-embedding-v4
+
+  # ===== QQ 邮箱 SMTP（可选：忘记密码功能，不配则该功能不可用）=====
+  # 授权码获取：QQ邮箱网页版 → 设置 → 账号 → 开启 POP3/SMTP 服务 → 生成授权码
+  mail:
+    username: 你的QQ邮箱@qq.com
+    password: 你的SMTP授权码

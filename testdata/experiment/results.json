@@ -1,0 +1,182 @@
+{
+  "summary": {
+    "total": 12,
+    "valid": 12,
+    "answerable": {
+      "count": 9,
+      "ragAvg": 1.89,
+      "directAvg": 1.78
+    },
+    "unanswerable": {
+      "count": 3,
+      "ragAvg": 1.67,
+      "directAvg": 1,
+      "ragRefusalRate": 0.67,
+      "directHallucinationCount": 1
+    },
+    "overall": {
+      "ragAvg": 1.83,
+      "directAvg": 1.58
+    },
+    "model": "qwen-plus",
+    "date": "2026-10-13"
+  },
+  "results": [
+    {
+      "id": 1,
+      "type": "answerable",
+      "question": "JDK、JRE 和 JVM 三者是什么关系？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "JDK、JRE 和 JVM三者是**层级包含关系**，具体如下：\n\n- **JVM（Java Virtual Machine，Java 虚拟机）**：最底层，是运行 Java 字节码的核心引擎，负责解释执行 `.class` 文件中的字节码指令，并将其转换为特定平台的机器码。JVM 是平台相关的，不同操作系统有各自的 JVM 实现 [引用1]。\n\n-**JRE（Java RuntimeEnvironment，Java运行环境）**：包含 **JVM +Java 核心类库（如 `java.lang`、`java.util` 等）**，用于运行已编译的Java 程序。普通用户只需安装JRE 即可运行Java 应用 [引用1]。\n\n- **JDK（Java Development Kit，Java 开发工具包）**：最上层，是面向开发者的完整工具集，**包含 JRE +开发工具**，如：\n - `javac`：Java编译器（将`.java`源文件编译为 `.class`字节码）；\n- `java`：启动JVM 运行程序的命令；\n - `jdb`：调试器、`javadoc`：文档生成工具等 [引用1]。\n\n✅ 总结关系（由小到大）：  \n**JVM⊂ JRE ⊂JDK**\n\n即：**JDK 包含 JRE，JRE 包含 JVM** [引用1]。",
+      "directAnswer": "JDK、JRE 和 JVM 是 Java 平台中三个核心但层级不同的组件，它们之间是**包含与依赖关系**，可形象理解为：  \n**JDK ⊃ JRE ⊃ JVM**（即 JDK 包含 JRE，JRE 包含 JVM）\n\n下面逐层说明其定义、职责及关系：\n\n---\n\n✅ **1. JVM（Java Virtual Machine，Java 虚拟机）**  \n- **本质**：一个**抽象的、平台相关的运行时引擎**（规范 + 具体实现，如 HotSpot、OpenJ9）。  \n- **核心职责**：  \n  - 加载 `.class` 字节码文件；  \n  - 通过解释器（Interpreter）或即时编译器（JIT Compiler）执行字节码；  \n  - 管理内存（堆、栈、方法区等）、垃圾回收（GC）、线程调度、安全校验等。  \n- **关键特点**：  \n  - **跨平台的关键**：“一次编写，到处运行”的基石——只要目标系统有对应平台的 JVM 实现，就能运行同一份字节码；  \n  - **不直接处理源代码（`.java`）**，只认字节码（`.class`）；  \n  - **本身不包含开发工具或类库**，是最底层的运行环境。\n\n---\n\n✅ **2. JRE（Java Runtime Environment，Java 运行时环境）**  \n- **组成 = JVM + Java 标准类库（Java Class Library）+ 其他运行时资源**（如 `rt.jar`、`resources.jar`、国际化支持、字体、音视频等）。  \n- **定位**：专为**运行已编译的 Java 程序**而设计的最小完整环境。  \n- **适用人群**：普通用户（只需运行 Java 应用，如 Minecraft、Eclipse IDE 本身、银行客户端等）。  \n- ✅ 安装 JRE 即可运行 `.jar` 或启动 Java 程序（如 `java -jar app.jar`）。  \n- ❌ **不包含编译器（`javac`）、调试器（`jdb`）、打包工具（`jar`）等开发工具**。\n\n> 💡 类比：JRE ≈ “Java 程序的‘操作系统’”——提供运行所需的一切基础支撑（虚拟机 + 核心API）。\n\n---\n\n✅ **3. JDK（Java Development Kit，Java 开发工具包）**  \n- **组成 = JRE + 开发工具集 + 开发者资源**  \n  - ✅ 包含完整的 JRE（即自带 JVM + 类库）；  \n  - ✅ 额外提供：  \n    - `javac`：Java 编译器（将 `.java` → `.class`）；  \n    - `java`：启动器（调用 JVM 运行程序）；  \n    - `javadoc`：生成 API 文档；  \n    - `jdb`：调试器；  \n    - `jar` / `jlink` / `jdeps` / `jstat` 等实用工具；  \n    - 源代码（`src.zip`）、调试符号、头文件（用于 JNI）等。  \n- **定位**：面向**Java 开发者**的完整 SDK（Software Development Kit）。  \n- ✅ 安装 JDK 后，既能**编写、编译、调试、打包** Java 程序，也能**直接运行**它（因为内含 JRE）。  \n- ⚠️ 注意：现代 JDK（如 JDK 9+）已将 JRE 的概念弱化（不再单独分发 JRE），但逻辑上仍保留 JRE 的功能子集（可通过 `jlink` 自定义运行时镜像）。\n\n---\n\n📌 **三者关系图示**：\n```\n┌───────────────────────────────────────────────┐\n│                    JDK                          │\n│ ┌────────────────────────────────────────────┐ │\n│ │                   JRE                      │ │\n│ │ ┌────────────────────────────────────────┐ │ │\n│ │ │                 JVM                    │ │ │\n│ │ │ • 字节码加载/验证/执行                 │ │ │\n│ │ │ • 内存管理、GC、线程、安全机制         │ │ │\n│ │ └────────────────────────────────────────┘ │ │\n│ │ • java.lang / java.util / java.io 等标准类库 │ │\n│ │ • 本地库、配置、资源文件等                │ │\n│ └────────────────────────────────────────────┘ │\n│ • javac, java, jar, jdb, javadoc, jlink...   │\n│ • 源码、头文件、文档等开发者资源             │\n└───────────────────────────────────────────────┘\n```\n\n---\n\n🔍 补充说明：\n- **“java” 命令是谁提供的？**  \n  `java` 命令由 JDK/JRE 提供，它是一个启动脚本/可执行程序，作用是**找到并启动 JVM**，并传入参数和类路径。\n- **为什么安装 JDK 就不用再装 JRE？**  \n  因为 JDK 已内置 JRE（通常在 `jdk/jre/` 或 JDK 9+ 中以模块化方式集成），`java` 命令默认使用自带的运行时。\n- **能否只有 JVM？**  \n  理论上可以（如嵌入式精简 JVM），但实际中几乎总是与类库一起使用（即至少构成 JRE）。纯 JVM 无法运行任何有意义的 Java 程序（缺少 `Object`, `String`, `System.out` 等）。\n\n---\n\n✅ 总结一句话：  \n> **JVM 是运行字节码的引擎；JRE 是让 Java 程序能跑起来的最小环境（JVM + 类库）；JDK 是给程序员用的“全家桶”（JRE + 编译器 + 工具链 + 开发资源）。**\n\n如需进一步区分（比如 JDK 8 vs JDK 11+ 的结构变化、`jlink` 定制运行时、或 OpenJDK 与 Oracle JDK 的差异），也欢迎继续提问 😊",
+      "judgeReason": "两个答案均准确、完整呈现了JDK包含JRE、JRE包含JVM的层级包含关系，核心定义与参考答案完全一致，无事实错误或遗漏关键点。",
+      "elapsedMs": 43963
+    },
+    {
+      "id": 2,
+      "type": "answerable",
+      "question": "面向对象编程的三大特性是什么？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "面向对象编程（OOP）的三大特性是：**封装、继承、多态** [引用1]。 \n\n具体说明如下： \n- **封装**：将对象的属性和行为包装在类内部，对外提供公共方法访问，隐藏内部实现细节；Java 通过 `private`、默认（包级私有）、`protected`、`public` 等访问修饰符实现封装，有助于降低耦合、提高可维护性 [引用1]。  \n- **继承**：子类自动获得父类的属性和方法，Java 使用`extends` 关键字实现**单继承**；子类可重写（Override）父类方法，需满足方法签名相同、访问权限不更严格、不抛出更宽泛的受检异常等条件 [引用1][引用2]。  \n-**多态**：同一方法调用在运行时表现出不同形态，典型实现是**父类引用指向子类对象**；其两个必要条件是存在继承关系和方法重写；JVM 通过动态绑定机制在运行期决定调用哪个具体实现，从而提升代码扩展性 [引用2]。",
+      "directAnswer": "面向对象编程（OOP）的三大核心特性是：\n\n1. **封装（Encapsulation）**  \n   - 将数据（属性）和操作数据的方法（行为）捆绑在一起，形成一个独立的单元（即类或对象）。  \n   - 通过访问控制（如 `private`、`protected`、`public`）隐藏内部实现细节，仅暴露必要的接口（API），从而提高安全性与可维护性。  \n   - ✅ 作用：降低耦合、增强模块化、防止外部非法访问。\n\n2. **继承（Inheritance）**  \n   - 允许一个类（子类/派生类）基于另一个类（父类/基类）来定义，自动获得父类的属性和方法，并可扩展或重写（override）其行为。  \n   - 支持代码复用和层次化建模（如“动物 → 狗”、“图形 → 圆形”）。  \n   - ⚠️ 注意：多继承在某些语言（如 C++）中支持，而 Java/Python 等通过单继承+接口/抽象类/多重继承（Python）等方式实现类似能力。\n\n3. **多态（Polymorphism）**  \n   - 指同一操作或方法调用，在不同对象上可产生不同的行为。  \n   - 主要体现为：  \n     - **运行时多态（动态绑定）**：通过继承 + 方法重写 + 父类引用指向子类对象（如 `Animal a = new Dog(); a.speak();`），具体执行哪个版本由实际对象类型决定。  \n     - **编译时多态（静态绑定）**：如方法重载（overloading），但严格来说，主流 OOP 理论更强调运行时多态作为核心多态形式。  \n   - ✅ 作用：提高程序的灵活性、可扩展性和可维护性（开闭原则的基础）。\n\n📌 补充说明：  \n- 有些资料会提到“抽象（Abstraction）”作为第四特性，它强调提取共性、忽略细节（常通过抽象类、接口实现），但通常被视作 OOP 的设计原则或思想基础，而非与封装/继承/多态并列的“技术特性”。三大特性是支撑 OOP 实现的基石机制。\n\n✅ 总结口诀：**封（装）、继（承）、多（态）——三位一体，构建健壮面向对象系统。**",
+      "judgeReason": "两个答案均准确、完整、无错误地指出封装、继承、多态为面向对象编程的三大特性，且核心定义与参考答案严格一致；虽答案1和答案2在解释深度、举例、语言细节（如Java特性、多态分类）上各有拓展，但所有拓展内容均为公认正确知识，未偏离或歪曲三大特性的本质，符合‘准确完整’得2分标准。",
+      "elapsedMs": 22241
+    },
+    {
+      "id": 3,
+      "type": "answerable",
+      "question": "什么是多态？实现多态需要什么条件？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "多态是指**同一个方法调用在运行时表现出不同形态**，即根据实际对象类型的不同，执行不同的方法实现。这是面向对象编程的三大特性之一，能显著提高代码的扩展性和可维护性[引用1]。\n\n###实现多态需要满足两个必要条件：\n1. **继承关系（或实现关系）**：必须存在类之间的继承（`extends`）或类对接口的实现（`implements`），从而形成父类（或接口）与子类（或实现类）的层次结构 [引用1]。\n2. **方法重写（Override）**：子类必须重写父类（或接口）中的方法，且重写需满足：  \n - 方法签名（名称、参数列表、返回类型）相同；  \n  -访问权限不能比父类更严格；  \n  -不能抛出比父类更宽泛的受检异常 [引用1][引用2]。\n\n此外，多态的典型表现形式是：**使用父类（或接口）类型声明引用变量，但指向子类（或实现类）的实际对象**，例如：  \n```java\nAnimala = new Dog(); // Animal 是父类，Dog 是子类\na.sound(); // 运行时调用 Dog 类重写的 sound()方法\n```\n此时 JVM 在运行期通过**动态绑定（dynamic binding）**机制，依据实际对象类型决定调用哪个方法 [引用1]。\n\n> ✅补充说明：多态依赖于运行时的动态分派，而非编译时的静态绑定；它使方法参数、返回值、集合元素等可以统一面向抽象编程（如声明为父类类型），从而支持灵活替换具体子类实现[引用1]。",
+      "directAnswer": "多态（Polymorphism）是面向对象编程（OOP）的四大核心特性之一（其余为封装、继承、抽象），其核心思想是：**同一操作作用于不同的对象，可以产生不同的执行结果**。即“一个接口，多种实现”，使程序具有更好的可扩展性与灵活性。\n\n---\n\n### 一、什么是多态？\n多态允许我们用统一的方式（如调用同一个方法名）处理不同类型的对象，而具体执行哪个版本的方法，由**运行时实际对象的类型**决定（而非变量声明的类型）。  \n✅ 通俗理解：  \n> “老师”这个角色，对小学生说“请打开课本”，学生翻开语文书；对程序员说“请打开课本”，他可能打开《算法导论》PDF——同是“打开课本”，行为因对象不同而异。\n\n---\n\n### 二、实现多态需要满足的三个必要条件（以 Java/C++/C# 等主流 OOP 语言为例）\n\n| 条件 | 说明 | 示例（Java） |\n|------|------|--------------|\n| **1. 继承（或实现接口）** | 多态发生在类的层次结构中：子类继承父类，或多个类实现同一接口。这是建立“同一类型视图”的基础。 | `class Animal { void sound() {...} }`<br>`class Dog extends Animal { void sound() { System.out.println(\"汪汪\"); } }`<br>`class Cat extends Animal { void sound() { System.out.println(\"喵喵\"); } }` |\n| **2. 方法重写（Override）** | 子类必须重写父类（或接口）中的**非静态、非 final、非 private 的虚方法**（即具有运行时绑定特性的方法）。只有被重写的方法才能表现出多态行为。 | `@Override void sound()` 在 `Dog` 和 `Cat` 中分别实现不同逻辑。 |\n| **3. 父类引用指向子类对象（向上转型）** | 必须通过父类（或接口）类型的引用来调用该方法，且实际指向的是子类实例。编译时看引用类型，**运行时看实际对象类型**（动态绑定 / 动态分派）。 | `Animal a1 = new Dog();`<br>`Animal a2 = new Cat();`<br>`a1.sound(); // 输出\"汪汪\"`<br>`a2.sound(); // 输出\"喵喵\"` |\n\n> ✅ 补充说明：  \n> - **静态方法、private 方法、final 方法不支持多态**（它们是静态绑定，编译期就确定了调用目标）。  \n> - 接口多态同样适用：`List<String> list = new ArrayList<>();` → `list.add()` 行为取决于 `ArrayList` 实现。  \n> - Python/JavaScript 等动态语言通过“鸭子类型”实现多态（无需显式继承，只要对象有对应方法即可），但本质仍是“同接口，不同实现”。\n\n---\n\n### 三、多态的两种主要形式\n| 类型 | 特点 | 示例 |\n|------|------|------|\n| **编译时多态（静态多态）** | 主要指**方法重载（Overload）**：同一类中多个同名方法，参数列表不同。编译器根据**参数类型/个数**在编译期决定调用哪个方法。⚠️ 严格来说，这不属于 OOP 意义上的多态（因无运行时动态绑定）。 | `void print(int x)`, `void print(String s)` |\n| **运行时多态（动态多态）** | ✅ 真正的多态，即上述继承+重写+向上转型的组合，依赖**虚拟方法调用（Virtual Method Invocation）** 和 **动态绑定（Dynamic Binding）**。 | `a.sound()` 调用哪个 `sound()`，运行时才确定。 |\n\n---\n\n### 四、为什么需要多态？（价值）\n- ✅ **解耦合**：调用方只依赖抽象（父类/接口），不关心具体实现，便于替换组件（如数据库从 MySQL 换成 PostgreSQL，只需换实现类）。  \n- ✅ **可扩展性强**：新增子类（如 `Bird extends Animal`）无需修改原有调用代码。  \n- ✅ **支持设计模式**：策略模式、模板方法、工厂方法等均以多态为基础。  \n- ✅ **提升代码复用与可维护性**。\n\n---\n\n✅ 总结一句话：  \n> **多态 = 继承（或实现） + 重写 + 向上转型 + 运行时动态绑定**  \n> 它让程序“以不变应万变”，是构建灵活、健壮、可演进系统的关键基石。\n\n如需我用 Python/Java/C++ 分别演示完整代码示例，欢迎随时提出 😊",
+      "judgeReason": "答案1完整涵盖多态定义、三大必要条件（继承/实现、重写、父类引用指向子类对象）、动态绑定本质，并补充静态多态辨析与语言差异，虽篇幅长但所有要点均准确且严丝合缝匹配参考答案核心；答案2精炼准确表述定义（‘同一个方法调用在运行时表现出不同形态’）和两个关键条件（继承关系、方法重写），明确点出父类引用指向子类对象及动态绑定，与参考答案完全一致，无冗余无错误。",
+      "elapsedMs": 36664
+    },
+    {
+      "id": 4,
+      "type": "answerable",
+      "question": "抽象类和接口有什么区别？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "根据参考资料，抽象类和接口的主要区别如下：\n\n1. **定义与关键字**  \n  - 抽象类使用 `abstract` 关键字修饰；  \n  -接口使用 `interface`关键字定义[引用1]。\n\n2. **成员构成**  \n - 抽象类可以包含：  \n   - 构造方法（用于子类初始化）；  \n    - 成员变量（可为任意访问权限，非常量）；  \n    - 具体方法（有实现）和抽象方法（无实现）[引用1]。  \n - 接口中的：  \n    - 方法默认是 `public abstract`（Java 8前）；Java8 起支持`default` 默认方法和 `static`静态方法； \n    - 成员变量默认是 `public static final`（即常量），不能有普通字段 [引用1]。\n\n3. **继承与实现机制**  \n - 一个类只能**继承一个抽象类**（Java 单继承限制）；  \n  - 一个类可以**实现多个接口**（支持多实现）[引用1]。\n\n4. **设计语义**  \n  - 抽象类表达 **is-a 关系**（如“狗 is-a动物”），强调类的共性与层次； \n  - 接口表达 **can-do 关系**（如“鸟can-do fly”），强调能力或契约 [引用1]。\n\n5. **其他补充说明**  \n - 抽象类可以有 `protected` 或 `private` 成员，而接口所有成员默认`public`，不可降级； \n  -接口不能有构造器，抽象类可以有（供子类调用）[引用1]。\n\n> 注：参考资料中未提及接口是否支持静态代码块、内部类细节，也未对比两者的序列化行为或 JVM 底层实现差异，以上回答严格限定于所给资料范围。",
+      "directAnswer": "抽象类（Abstract Class）和接口（Interface）都是面向对象编程中实现**抽象**和**多态**的重要机制，但它们在设计目的、语法限制、使用场景等方面有本质区别。以下是 Java（主流参考，其他语言如 C# 类似，Python 通过 ABC 模块模拟）中的核心区别对比：\n\n| 特性 | 抽象类（Abstract Class） | 接口（Interface） |\n|------|---------------------------|-------------------|\n| **定义目的** | 表示“**是什么**”（is-a 关系），用于抽取具有共同状态和行为的类的共性，强调**继承与代码复用** | 表示“**能做什么**”（can-do 关系），定义**契约或能力规范**，强调**解耦与扩展性** |\n| **实例化** | ❌ 不能直接实例化（需子类继承并实现所有抽象方法后才能实例化） | ❌ 不能实例化（Java 8+ 可通过 `new Interface() { ... }` 匿名内部类间接实现，但本质仍是实现类） |\n| **方法** | ✅ 可包含：<br>• 抽象方法（无实现）<br>• 具体方法（有实现，可被子类继承/重写）<br>• `static` 方法（Java 8+）<br>• `private` 方法（Java 9+，用于辅助抽象方法） | ✅ Java 8+ 支持：<br>• 抽象方法（默认 `public abstract`）<br>• `default` 方法（有实现，可被实现类继承）<br>• `static` 方法（必须有实现，通过接口名调用）<br>❌ 不允许 `private` 实例方法（Java 9+ 允许 `private` 辅助方法） |\n| **字段（成员变量）** | ✅ 可定义任意访问修饰符的字段（`public`/`protected`/`private`/`default`），可为 `final`、`static` 或普通变量 | ✅ **只能是 `public static final` 常量**（即使不写修饰符，编译器自动添加）→ 本质是全局常量 |\n| **构造器** | ✅ 可以有构造器（用于初始化抽象类的成员，由子类 `super()` 调用） | ❌ **不能有构造器**（接口不是类，不参与对象创建流程） |\n| **继承/实现关系** | ✅ **单继承**：一个类 `extends` 一个抽象类（Java 不支持多继承类） | ✅ **多实现**：一个类可 `implements` 多个接口（支持多重能力组合）<br>✅ 接口可 `extends` 多个接口（多继承接口） |\n| **访问修饰符** | 方法/字段可使用 `public`、`protected`、`private`、包级私有 | 所有方法默认 `public abstract`（抽象方法）、`public static`（静态方法）、`public default`（默认方法）；字段默认 `public static final` → **不允许 `private`/`protected` 修饰方法（除 Java 9+ 的 private helper 方法）** |\n| **设计哲学** | 侧重 **代码复用 + 共享状态**（如模板方法模式、公共字段、通用逻辑） | 侧重 **行为契约 + 解耦 + 灵活扩展**（如策略模式、回调、API 定义） |\n\n### 🌟 关键理解要点：\n1. **“is-a” vs “can-do”**  \n   - `Animal` 是抽象类 → `Dog extends Animal`（狗 *是一种* 动物）  \n   - `Flyable`, `Swimmable` 是接口 → `Duck implements Flyable, Swimmable`（鸭子 *能飞、能游*）\n\n2. **为什么接口支持多实现？**  \n   避免菱形继承问题，让类能灵活组合多种能力（如 `SmartPhone implements Callable, Browsable, Payable`）\n\n3. **抽象类更适合什么场景？**  \n   - 子类有大量共用代码（如数据库连接池的 `open()`/`close()` 模板）  \n   - 需要共享状态（如抽象类中定义 `protected String version;`）  \n   - 框架基类（如 Spring 的 `JdbcDaoSupport`）\n\n4. **接口更适合什么场景？**  \n   - 定义标准协议（如 `Comparable`, `Serializable`, `Runnable`）  \n   - 解耦依赖（面向接口编程，便于 Mock/替换实现）  \n   - 回调机制（如 `OnClickListener`）  \n   - 未来扩展（`default` 方法可向后兼容添加新方法）\n\n### ✅ 最佳实践建议：\n- **优先使用接口**：定义能力契约、解耦系统、支持多实现。  \n- **必要时用抽象类**：当需要共享代码、状态或构造逻辑，且存在明确的“父子”层级关系。  \n- **可组合使用**：接口定义能力，抽象类提供部分实现（如 `AbstractList<E>` 实现了 `List<E>` 接口的大部分方法）。  \n- **Java 8+ 后，接口更强大**：`default` 和 `static` 方法减少了抽象类的部分优势，但抽象类仍不可替代（因支持状态和构造器）。\n\n> 💡 小结一句话：  \n> **抽象类是“半成品类”，强调复用与继承；接口是“能力契约”，强调规范与组合。**\n\n如需 C#、Python 或 TypeScript 的对应差异，我也可以补充 😊",
+      "judgeReason": "答案1严格依据参考答案要点（构造方法、成员变量、具体方法、单继承 vs 多实现、default/static方法、is-a/can-do语义），结构清晰、无冗余编造，且主动声明范围限定；答案2虽扩展更广（如private方法、构造器对比、表格化呈现），但所有核心点（抽象类可有构造器/成员变量/具体方法、接口方法默认public abstract/变量public static final、多实现/单继承、Java 8+ default/static、is-a/can-do）均准确覆盖参考答案，未引入事实性错误或矛盾信息，属合理深化而非编造。",
+      "elapsedMs": 42437
+    },
+    {
+      "id": 5,
+      "type": "answerable",
+      "question": "字符串比较为什么应该用 equals 而不是双等号？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "字符串比较应该使用`equals()` 方法而不是双等号（`==`），原因如下：\n\n-**`==`比较的是引用地址**，即判断两个字符串变量是否指向堆内存中的**同一个对象**；  \n-**`equals()`比较的是字符串的**内容（即字符序列是否完全相同）[引用1]。\n\n这是因为 `String` 类是**不可变类（immutable）**，其内部使用 `final` 修饰的字节数组存储字符数据。任何对字符串的修改（如拼接、截取等）都会创建**新的 String 对象**，原对象保持不变。因此，即使两个字符串内容相同，它们也可能是不同的对象，此时 `==`会返回 `false`，而 `equals()` 才能正确返回 `true`。\n\n✅正确示例：\n```java\nString s1 = \"hello\";\nString s2 =\"hello\";\nStrings3 = new String(\"hello\");\n\nSystem.out.println(s1 == s2);     // true（字符串常量池优化，指向同一对象）\nSystem.out.println(s1 == s3);     // false（s3是 new 出的新对象，地址不同）\nSystem.out.println(s1.equals(s3)); // true（内容相同）\n```\n\n⚠️ 注意：仅当字符串均来自**字符串常量池**（如直接赋值字面量）且内容相同时，`==` 才可能为 `true`；但该行为依赖 JVM 优化，**不可靠、不具可移植性**，因此**绝不应依赖`==`判断字符串内容是否相等**。\n\n综上，为确保语义正确性和代码健壮性，**字符串内容比较必须使用 `equals()` 方法** [引用1]。",
+      "directAnswer": "在 Java 中，字符串比较**应该使用 `equals()` 而不是 `==`（双等号）**，根本原因在于：\n\n> ✅ `==` 比较的是**引用是否指向同一个对象（内存地址）**；  \n> ✅ `equals()` 比较的是**字符串内容是否相等（字符序列是否完全相同）**。\n\n---\n\n### 🔍 详细解释 + 示例\n\n#### ✅ 正确用法：`equals()`\n```java\nString s1 = \"hello\";\nString s2 = \"hello\";\nString s3 = new String(\"hello\");\n\nSystem.out.println(s1.equals(s2)); // true → 内容相同\nSystem.out.println(s1.equals(s3)); // true → 内容相同（忽略创建方式）\n```\n\n#### ❌ 错误用法：`==`\n```java\nString s1 = \"hello\";\nString s2 = \"hello\";\nString s3 = new String(\"hello\");\nString s4 = s3.intern(); // 将 s3 引入字符串常量池\n\nSystem.out.println(s1 == s2); // true → 字符串字面量，共享常量池中同一对象\nSystem.out.println(s1 == s3); // false → s3 是堆中新对象，地址不同\nSystem.out.println(s1 == s4); // true → intern() 后指向常量池中的 s1\n```\n\n⚠️ 可见：`==` 的结果**依赖于字符串的创建方式和 JVM 的字符串常量池优化**，**不可靠、不直观、易出错**。\n\n---\n\n### 🧠 为什么会有这种区别？——底层机制\n\n- Java 中 `String` 是**不可变的引用类型**。\n- 字符串字面量（如 `\"abc\"`）会被 JVM 自动放入**字符串常量池（String Pool）**，相同字面量复用同一对象（享元模式）。\n- `new String(\"abc\")` 总是在**堆内存中新建对象**，即使内容相同，也与常量池中的对象地址不同。\n- `==` 是 Java 原生运算符，对所有引用类型都只比较引用（即 `Object` 的内存地址），**不会自动重载或特殊处理字符串**。\n- `String.equals()` 是重写（override）了 `Object.equals()` 的方法，内部逐字符比较 `value[]` 数组内容（JDK 9+ 使用 `Arrays.equals()`），语义上是“逻辑相等”。\n\n---\n\n### 🚫 其他常见误区\n\n| 场景 | `==` 是否安全？ | 说明 |\n|------|----------------|------|\n| `\"abc\" == \"abc\"` | ✅ 碰巧为 true（常量池优化） | **但这是实现细节，不应依赖！** |\n| `s1 == s2`（两个 `new String(...)`） | ❌ 几乎总为 false | 即使内容相同 |\n| `s1 == s2.intern()` | ⚠️ 风险高 | `intern()` 行为复杂，且有性能/内存开销 |\n| `null` 安全性 | ❌ `null == \"abc\"` → `false`（安全），但 `\"abc\".equals(null)` → `false`；而 `null.equals(\"abc\")` → **空指针异常！** | ✅ 推荐：`Objects.equals(s1, s2)`（Java 7+）更健壮 |\n\n✅ 最佳实践：\n```java\n// 推荐：安全、清晰、符合语义\nif (Objects.equals(str1, str2)) { ... }\n\n// 或手动判空（若不用 Objects）\nif (str1 != null && str1.equals(str2)) { ... }\n```\n\n---\n\n### 💡 类比理解（帮助记忆）\n\n| 比喻 | 说明 |\n|------|------|\n| `==` 就像问：“这两个人是不是同一个人（身份证号/本体）？” | 关注身份（内存地址） |\n| `equals()` 就像问：“这两个人名字、年龄、长相是否一模一样？” | 关注内容（值语义） |\n\n---\n\n### ✅ 总结一句话：\n\n> **`==` 判断“是不是同一个字符串对象”，`equals()` 判断“是不是相同的字符串内容”；业务逻辑中我们几乎总是关心“内容是否相同”，因此必须用 `equals()`（或 `Objects.equals()`）。**\n\n如需进一步了解字符串常量池、`intern()` 原理或 `String` 源码细节，欢迎继续提问 😊",
+      "judgeReason": "两个答案均准确完整地解释了String不可变性、==比较引用地址、equals比较内容的核心机制，并正确指出常量池影响、new String()创建新对象、以及依赖==的不可靠性；虽表述详略不同，但关键点无遗漏、无错误，完全符合参考答案主旨。",
+      "elapsedMs": 33896
+    },
+    {
+      "id": 6,
+      "type": "answerable",
+      "question": "JDK 8 之后 HashMap 的底层数据结构是什么？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "JDK 8之后，HashMap 的底层数据结构是 **数组 +链表 +红黑树** [引用1]。\n\n具体来说：\n- HashMap底层维护一个数组（`Node<K,V>[]table`），数组的每个元素是一个桶（bucket）；\n- 当发生哈希冲突时，键值对以链表形式存入同一桶中；\n- **当链表长度 ≥ 8 且数组长度 ≥ 64 时，该链表会转换为红黑树**，以提升查找性能（从 O(n) 优化至O(log n)）；\n- 若红黑树节点数减少到 ≤6，则会退化回链表 [引用1]。\n\n这一优化显著改善了在大量哈希冲突场景下的性能表现。",
+      "directAnswer": "JDK 8 之后（即 JDK 8 及以后版本，包括 JDK 9、11、17、21 等），**HashMap 的底层数据结构是：数组 + 链表 + 红黑树（Red-Black Tree）的混合结构**。\n\n具体来说：\n\n✅ **主干结构**：一个 `Node<K,V>[] table`（即 `Node` 类型的动态数组），数组的每个桶（bucket）是一个链表或红黑树的头节点。\n\n✅ **冲突处理机制（JDK 8 的关键改进）**：\n- 当向 HashMap 插入键值对时，先通过 `hash(key)` 计算哈希值，再通过 `(n - 1) & hash` 定位到数组索引位置（`n` 为数组长度，必须是 2 的幂）。\n- 若该位置为空（`null`），直接插入新节点（`Node`）；\n- 若该位置已有节点，则发生哈希冲突，采用**链地址法（Chaining）**：\n  - **链表阶段**：新节点以**尾插法**（JDK 8 起改为尾插，避免 JDK 7 的头插法导致的循环链表问题）插入到链表末尾；\n  - **树化条件（转为红黑树）**：当链表长度 ≥ **8** **且** 数组长度 ≥ **64** 时，该链表会被**树化（treeify）为红黑树**；\n  - **反树化（退化为链表）**：当红黑树节点数 ≤ **6** 时，会**反树化（untreeify）为链表**（注意：不是在 resize 时立即退化，而是在 remove 或 resize 后检查并触发）。\n\n✅ **为什么用红黑树？**  \n相比链表，红黑树将最坏情况下的查找/插入/删除时间复杂度从 **O(n)** 优化为 **O(log n)**，显著提升高哈希冲突场景（如大量 key 哈希值相同）下的性能稳定性。\n\n✅ 补充说明：\n- `Node` 是 HashMap 的静态内部类，实现 `Map.Entry`，存储 `key`、`value`、`hash` 和 `next`（链表指针）；\n- 红黑树节点类型为 `TreeNode`（继承自 `Node`，扩展了 `parent`、`left`、`right`、`red` 等字段）；\n- 树化/反树化逻辑封装在 `treeifyBin()` 和 `untreeify()` 等方法中；\n- 所有操作（`get`、`put`、`remove`）均需兼容链表与红黑树两种形态，通过 `instanceof TreeNode` 判断节点类型。\n\n📌 总结一句话：  \n> **JDK 8+ 的 HashMap 底层是「数组 + 链表/红黑树」的动态混合结构，以空间换时间，在平均情况下保持 O(1) 时间复杂度，同时通过红黑树保障最坏情况下的 O(log n) 性能。**\n\n如需对比 JDK 7：JDK 7 仅使用**数组 + 链表**（头插法，存在并发扩容死循环风险），无红黑树优化。JDK 8 的这一改进是其核心性能升级之一。",
+      "judgeReason": "两个答案均准确、完整复现了参考答案的核心要点（数组+链表+红黑树；树化条件为链表长度≥8且数组长度≥64），且无事实性错误；答案2虽扩展详尽，但所有补充内容（如尾插法、反树化阈值6、TreeNode结构等）均为JDK 8官方实现事实，属于合理且严谨的延伸，未偏离参考答案主旨。",
+      "elapsedMs": 24300
+    },
+    {
+      "id": 7,
+      "type": "answerable",
+      "question": "HashMap 的默认初始容量和负载因子分别是多少？",
+      "ragScore": 1,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "根据参考资料，HashMap的默认初始容量是**16**，负载因子是 **0.75** [引用1]。",
+      "directAnswer": "在 Java 中，`HashMap` 的默认初始容量（initial capacity）和负载因子（load factor）如下：\n\n- **默认初始容量**：**16**（必须是 2 的幂）  \n- **默认负载因子**：**0.75**\n\n### 补充说明：\n- **初始容量**：指 `HashMap` 创建时内部哈希表（数组）的初始大小。`16` 是一个在空间开销与哈希冲突概率之间权衡的合理值。\n- **负载因子**：表示哈希表在其容量自动扩容前可被填满的程度。当 `size / capacity ≥ load factor`（即元素个数 ≥ 容量 × 0.75）时，触发扩容（resize），容量翻倍（如从 16 → 32）。\n\n✅ 示例：  \n```java\nHashMap<String, Integer> map = new HashMap<>(); // 使用默认构造器\n// 此时：capacity = 16，loadFactor = 0.75，threshold = (int)(16 * 0.75) = 12\n// 当第 13 个键值对 put 进去且触发扩容条件时，会进行 resize（实际在 put 后检查，阈值为 12）\n```\n\n⚠️ 注意：\n- `threshold`（扩容阈值）初始值为 `capacity × loadFactor = 12`（向下取整为 `int`）。\n- 扩容后，新容量为原容量 × 2，新阈值为 `newCapacity × loadFactor`（例如 32 × 0.75 = 24）。\n\n这些值定义在 `HashMap` 源码中（JDK 8+）：\n```java\nstatic final int DEFAULT_INITIAL_CAPACITY = 1 << 4; // 16\nstatic final float DEFAULT_LOAD_FACTOR = 0.75f;\n```\n\n如有需要，也可通过构造函数自定义：\n```java\nnew HashMap<>(32, 0.8f); // 初始容量32，负载因子0.8\n```\n\n✅ 总结：  \n| 参数 | 默认值 |\n|------|--------|\n| 初始容量 | 16 |\n| 负载因子 | 0.75 |\n\n这是 JDK 标准实现（Oracle/OpenJDK）的约定，适用于 JDK 7 及以后版本（包括 JDK 8/11/17/21 等）。",
+      "judgeReason": "答案1完全匹配参考答案，且准确完整地阐述了默认初始容量、负载因子、扩容触发条件及源码依据；答案2虽给出正确数值，但未说明扩容机制（‘元素数量超过容量×负载因子时扩容为原来的两倍’），内容不完整，仅得1分",
+      "elapsedMs": 15486
+    },
+    {
+      "id": 8,
+      "type": "answerable",
+      "question": "ArrayList 的扩容机制是怎样的？",
+      "ragScore": 2,
+      "directScore": 0,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "ArrayList的扩容机制如下（依据参考资料）：\n\n- **默认初始容量**为10 [引用1]。 \n- 当添加元素导致容量不足时，会触发扩容；  \n- **扩容后的新容量 =原容量× 1.5**（即扩大为原来的 1.5 倍）[引用1]；  \n-扩容操作通过 `Arrays.copyOf()`方法完成数组复制 [引用1]；  \n-为避免频繁扩容带来的性能开销（如多次数组复制），**建议在已知元素数量较多时，预先指定初始容量** [引用1]。\n\n⚠️ 注意：该机制是 ArrayList自身的实现逻辑，与 HashMap 的扩容（2 倍扩容、基于负载因子）不同 [引用1]。",
+      "directAnswer": "ArrayList 的扩容机制是其核心实现细节之一，主要体现在 `add()` 方法（尤其是添加元素导致容量不足时）和 `ensureCapacityInternal()` 等辅助方法中。以下是基于 **OpenJDK 8+（主流 JDK 版本）** 的详细说明：\n\n---\n\n### ✅ 1. 初始容量（Initial Capacity）\n- 默认构造器 `new ArrayList()`：**初始容量为 0**（注意：JDK 7 是 10，但 JDK 8+ 优化为延迟分配，首次 add 时才真正初始化数组）。\n- 指定容量构造器 `new ArrayList(int initialCapacity)`：按指定值创建数组（若 `initialCapacity < 0` 抛 `IllegalArgumentException`）。\n\n> 🔍 补充：JDK 8 中，空参构造器创建的 ArrayList 使用一个共享的空数组 `EMPTY_ELEMENTDATA`，直到第一次 `add()` 才触发扩容并分配实际数组（通常是 10）。\n\n---\n\n### ✅ 2. 扩容触发时机\n当执行 `add(E e)` 且当前元素个数 `size == elementData.length`（即数组已满）时，触发扩容。\n\n```java\npublic boolean add(E e) {\n    ensureCapacityInternal(size + 1); // 关键：检查是否需要扩容\n    elementData[size++] = e;\n    return true;\n}\n```\n\n---\n\n### ✅ 3. 扩容计算逻辑（核心！）\n\n#### ▪️ 步骤一：计算最小所需容量（minCapacity）\n```java\nprivate void ensureCapacityInternal(int minCapacity) {\n    // 如果是空数组（如 EMPTY_ELEMENTDATA），首次扩容默认设为 10\n    if (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) {\n        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity); // DEFAULT_CAPACITY = 10\n    }\n    ensureExplicitCapacity(minCapacity);\n}\n```\n\n#### ▪️ 步骤二：真正扩容（grow() 方法）\n```java\nprivate void grow(int minCapacity) {\n    int oldCapacity = elementData.length;\n    // ✅ 关键公式：新容量 = 旧容量 + 旧容量/2 → 即 * 1.5 倍（右移1位等价于除以2）\n    int newCapacity = oldCapacity + (oldCapacity >> 1);\n\n    // 如果 1.5 倍仍不够，直接取 minCapacity（应对极端情况，如 minCapacity 极大）\n    if (newCapacity - minCapacity < 0)\n        newCapacity = minCapacity;\n\n    // 防止溢出：若 newCapacity 大于 MAX_ARRAY_SIZE，则调用 hugeCapacity()\n    if (newCapacity - MAX_ARRAY_SIZE > 0)\n        newCapacity = hugeCapacity(minCapacity);\n\n    // ✅ 真正复制数组：Arrays.copyOf(elementData, newCapacity)\n    elementData = Arrays.copyOf(elementData, newCapacity);\n}\n```\n\n- `oldCapacity >> 1` 是位运算，等价于 `oldCapacity / 2`（向下取整），因此：\n  - `newCapacity = oldCapacity * 1.5`（向下取整，如 10→15，15→22，22→33…）\n- `MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8`（JVM 限制，避免某些虚拟机因内存头信息导致 OOM）\n\n#### ▪️ hugeCapacity() 处理超大请求：\n```java\nprivate static int hugeCapacity(int minCapacity) {\n    if (minCapacity < 0) // overflow\n        throw new OutOfMemoryError();\n    return (minCapacity > MAX_ARRAY_SIZE) ?\n        Integer.MAX_VALUE : // 尝试分配到 Integer.MAX_VALUE（可能仍失败）\n        MAX_ARRAY_SIZE;\n}\n```\n\n---\n\n### ✅ 4. 扩容示例（直观演示）\n假设使用默认构造器，依次 `add()` 15 个元素：\n\n| 操作次数 | size | 当前容量 | 是否扩容？ | 新容量计算                     | 实际容量 |\n|----------|------|-----------|-------------|----------------------------------|-----------|\n| add(1)   | 1    | 0         | ✅ 首次扩容  | `max(10, 1) = 10`               | 10        |\n| add(2..10)| 2–10 | 10        | ❌           | —                                | 10        |\n| add(11)  | 11   | 10        | ✅           | `10 + 10>>1 = 10 + 5 = 15`      | 15        |\n| add(12..15)|12–15| 15        | ❌           | —                                | 15        |\n| add(16)  | 16   | 15        | ✅           | `15 + 15>>1 = 15 + 7 = 22`       | 22        |\n\n> 💡 注意：`15>>1 = 7`（整数除法向下取整），所以不是严格 1.5×，而是 `old + old/2`（整除）。\n\n---\n\n### ✅ 5. 其他相关点\n\n| 场景 | 说明 |\n|------|------|\n| **`ensureCapacity(int minCapacity)`** | 可手动预扩容（避免多次自动扩容），例如已知要加 1000 个元素，可提前 `list.ensureCapacity(1000)` |\n| **`trimToSize()`** | 将底层数组大小缩减为当前 `size`，释放冗余空间（减少内存占用） |\n| **线程不安全** | 扩容涉及数组复制和引用更新，非原子操作，多线程下需外部同步（如 `Collections.synchronizedList()` 或使用 `CopyOnWriteArrayList`） |\n| **时间复杂度** | 单次 `add()` 平摊 O(1)，最坏 O(n)（触发扩容时需复制数组）；`addAll()` 同理 |\n\n---\n\n### ✅ 总结：关键要点\n| 项目 | 内容 |\n|------|------|\n| **默认初始容量** | 0（首次 add 时扩容为 10） |\n| **扩容因子** | 1.5 倍（`old + old>>1`） |\n| **扩容方式** | `Arrays.copyOf()` 创建新数组并复制元素（底层调用 `System.arraycopy`，高效） |\n| **扩容阈值** | `size == elementData.length` 时触发 |\n| **最大容量** | `Integer.MAX_VALUE - 8`（`MAX_ARRAY_SIZE`），超限则尝试 `Integer.MAX_VALUE` |\n| **性能建议** | 预估大小时使用带参构造器或 `ensureCapacity()`，减少扩容次数 |\n\n---\n\n如需查看源码验证，可参考 OpenJDK 官方仓库：  \n🔗 https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayList.java\n\n需要我为你画一张扩容过程图解、或对比 `Vector`/`LinkedList` 的扩容差异吗？ 😊",
+      "judgeReason": "答案1准确完整复现参考答案（默认容量10、1.5倍扩容、Arrays.copyOf复制），无冗余错误；答案2错误宣称JDK8+默认初始容量为0，混淆了空数组引用与实际分配逻辑——参考答案明确要求‘默认初始容量10’，而JDK8中首次add时仍按DEFAULT_CAPACITY=10分配，该说法违背题目所指共识性事实，属实质性错误",
+      "elapsedMs": 42716
+    },
+    {
+      "id": 9,
+      "type": "answerable",
+      "question": "Java 异常体系分为哪几类？受检异常和非受检异常有什么区别？",
+      "ragScore": 2,
+      "directScore": 2,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "Java异常体系以`Throwable` 为根类，分为以下两大类：\n\n1. **Error（错误）**：表示 JVM 无法处理的严重问题，如 `OutOfMemoryError`、`StackOverflowError`等。这类问题通常与程序逻辑无关，属于系统级故障，**程序不应捕获或处理** [引用1]。\n\n2. **Exception（异常）**：表示程序运行中可能发生的、可被处理的异常情况，进一步分为两类：\n  -**受检异常（CheckedException）**：编译期强制要求处理的异常，即必须用 `try-catch` 捕获或用 `throws`声明抛出，否则编译不通过。典型例子是`IOException`、`SQLException` 等 [引用1]。\n  -**非受检异常（Unchecked Exception）**：即`RuntimeException`及其子类，**编译期不强制处理**，是否捕获由程序员决定。常见如 `NullPointerException`、`ArrayIndexOutOfBoundsException`、`IllegalArgumentException`等 [引用1]。\n\n✅ **受检异常 vs 非受检异常的核心区别**：\n\n|维度             |受检异常（Checked Exception）         |非受检异常（UncheckedException）        |\n|------------------|----------------------------------------|-------------------------------------------|\n| **继承关系**    | 直接或间接继承 `Exception`，但**不继承** `RuntimeException`| 继承自`RuntimeException`（`RuntimeException` 本身继承`Exception`） |\n| **编译检查**     |编译器强制要求处理（捕获或声明）         | 编译器**不强制**处理，可忽略               |\n| **发生时机**     |通常与外部环境相关（如文件读写、网络连接） | 通常由程序逻辑错误引起（如空指针、数组越界） |\n| **设计意图**     |表示**预期可能发生且应显式恢复**的异常场景 |表示**编程缺陷或不可恢复的运行时错误**       |\n\n补充说明：自定义异常若需成为受检异常，应继承 `Exception`；若希望是非受检异常，则继承`RuntimeException`，并建议重写构造方法以传递错误信息 [引用1][引用2]。",
+      "directAnswer": "Java 的异常体系基于 `Throwable` 类，主要分为两大类：**Error（错误）** 和 **Exception（异常）**。其中 `Exception` 又进一步划分为 **受检异常（Checked Exception）** 和 **非受检异常（Unchecked Exception）**。\n\n---\n\n### 一、Java 异常体系结构（简明层级）\n\n```\nThrowable\n├── Error（错误）\n│   ├── OutOfMemoryError\n│   ├── StackOverflowError\n│   ├── NoClassDefFoundError\n│   └── ...（JVM 问题，通常不可恢复，不建议捕获或处理）\n│\n└── Exception（异常）\n    ├── RuntimeException（运行时异常） → 非受检异常（Unchecked）\n    │   ├── NullPointerException\n    │   ├── ArrayIndexOutOfBoundsException\n    │   ├── IllegalArgumentException\n    │   ├── ClassCastException\n    │   └── ...\n    │\n    └── 其他 Exception 子类（非 RuntimeException 的直接/间接子类）→ 受检异常（Checked）\n        ├── IOException\n        ├── SQLException\n        ├── ClassNotFoundException\n        ├── ParseException\n        └── 自定义继承自 Exception（但未继承 RuntimeException）的异常\n```\n\n> ✅ **关键规则**：  \n> - **所有 `RuntimeException` 及其子类** → **非受检异常（Unchecked）**  \n> - **所有其他 `Exception` 子类（且非 `RuntimeException` 的后代）** → **受检异常（Checked）**  \n> - `Error` 及其子类也属于 **非受检**（编译器不强制处理），但语义上不属于“程序应处理的异常”，而是系统级严重问题。\n\n---\n\n### 二、受检异常（Checked Exception） vs 非受检异常（Unchecked Exception）\n\n| 特性 | 受检异常（Checked） | 非受检异常（Unchecked） |\n|------|---------------------|--------------------------|\n| **定义** | 编译器强制要求处理的异常（即必须 `try-catch` 或 `throws` 声明） | 编译器**不强制**处理；可选择性捕获或忽略 |\n| **继承关系** | `Exception` 的子类，**且不是 `RuntimeException` 的子类** | `RuntimeException` 及其子类，以及 `Error` 及其子类 |\n| **发生时机** | 通常由**外部因素**引起，程序**本可预见但无法完全避免**（如文件不存在、网络超时、数据库连接失败） | 多由**程序逻辑错误**导致（如空指针、数组越界、类型转换错误），本应通过编码规范/测试提前规避 |\n| **设计意图** | 强制开发者显式考虑和处理可恢复的、预期外的外部故障，提高健壮性 | 表示编程缺陷或不可恢复的运行时问题，应通过修复代码而非异常处理来解决 |\n| **典型例子** | `IOException`, `SQLException`, `ClassNotFoundException`, `ParseException` | `NullPointerException`, `ArrayIndexOutOfBoundsException`, `IllegalArgumentException`, `ArithmeticException`（如 `/ by zero`） |\n| **是否必须处理？** | ✅ 是（否则编译失败） | ❌ 否（编译通过，但运行时可能崩溃） |\n| **最佳实践** | ✔️ 捕获后做有意义的恢复（如重试、降级、记录日志、友好提示）<br>❌ 不要简单 `catch { e.printStackTrace(); }` 后吞掉 | ✔️ 应优先**预防**（如判空、边界检查、参数校验）<br>✔️ 若需捕获，通常用于顶层兜底日志/监控（如 Spring 的 `@ControllerAdvice`）<br>❌ 不应在业务逻辑中大量 `try-catch` 运行时异常来掩盖缺陷 |\n\n---\n\n### 三、补充说明\n\n- 🔹 **自定义异常**：  \n  - 继承 `Exception` → 受检异常（需处理）  \n  - 继承 `RuntimeException` → 非受检异常（无需强制处理）  \n  ```java\n  class MyCheckedException extends Exception { ... }      // 受检\n  class MyRuntimeException extends RuntimeException { ... } // 非受检\n  ```\n\n- 🔹 **为什么 `RuntimeException` 是非受检？**  \n  Java 设计者认为：运行时异常多源于编程错误（bug），应在开发/测试阶段暴露并修复，而非靠异常处理掩盖。强制捕获会增加大量冗余代码，降低可读性。\n\n- 🔹 **`Error` 虽是非受检，但一般不捕获**：  \n  如 `OutOfMemoryError`，捕获后通常无法有效恢复，强行处理可能引发更严重问题。应通过调优 JVM 参数、优化内存使用等方式预防。\n\n---\n\n✅ **总结一句话**：  \n> **受检异常 = “你必须面对的意外”（编译器盯你）；非受检异常 = “你本不该犯的错”（编译器提醒你改代码，而不是写 catch）。**\n\n如需进一步了解异常处理最佳实践（如 try-with-resources、异常链、Spring 中的全局异常处理等），欢迎继续提问！",
+      "judgeReason": "两个答案均准确、完整覆盖参考答案核心要点：Throwable根类，Error与Exception的划分，Exception下受检异常（编译强制处理，如IOException）与非受检异常（RuntimeException及其子类，如NullPointerException、ArrayIndexOutOfBoundsException），且均正确强调Error不应捕获、受检异常需显式处理、非受检异常编译不强制；无事实错误或编造，信息严谨，结构清晰。",
+      "elapsedMs": 40655
+    },
+    {
+      "id": 10,
+      "type": "unanswerable",
+      "question": "如何制作红烧肉？请给出详细步骤。",
+      "ragScore": 2,
+      "directScore": 0,
+      "ragRefused": true,
+      "ragCitations": 0,
+      "ragAnswer": "当前知识库中未找到与该问题相关的内容，无法基于教材资料回答。建议上传相关教材或讲义后再提问。",
+      "directAnswer": "当然可以！红烧肉是一道经典的中式家常名菜，色泽红亮、肥而不腻、入口即化。以下是**家庭版详细做法**（以五花肉500g为例），兼顾传统风味与实操性，关键步骤有贴心提示，助你一次成功👇\n\n---\n\n### 🌟【食材准备】（2–3人份）\n| 主料 | 辅料 | 调料 |\n|--------|--------|--------|\n| 带皮五花肉 500g（选三层分明、肥瘦相间者） | 生姜 4片、葱 2根（打结）、八角 2颗、桂皮 1小段（约3cm）、香叶 2片、干辣椒 1–2个（可选，增香不辣） | 冰糖 30g（或白砂糖25g）、生抽 3大勺（45ml）、老抽 1大勺（15ml）、料酒 2大勺（30ml）、盐 少许（最后调味用）、热水 800ml（务必是热水！） |\n\n> ✅ **选肉小贴士**：优先选“中段五花”，肥瘦比例3:7或4:6最佳；太瘦柴，太肥腻。带皮更香，切块前可先用火燎一下猪皮去腥增香。\n\n---\n\n### 🔪【详细步骤】（全程约2小时，含炖煮）\n\n#### 步骤1｜预处理五花肉  \n- 五花肉整块冷水下锅，加2片姜、1勺料酒，大火烧开后撇净浮沫（约3–5分钟），捞出用温水冲洗干净，**切3–4cm见方的块**（不宜过小，炖后会缩水）。  \n> ⚠️ 关键：**焯水后必须用温水冲洗**（不是冷水！防止肉质紧缩），并**擦干表面水分**（防煎时溅油）。\n\n#### 步骤2｜炒糖色（灵魂步骤！）  \n- 锅烧热→倒少许油（5g）→放入冰糖+1小勺清水→**中小火**慢慢加热，用锅铲不停搅拌至冰糖融化→颜色由白→黄→琥珀色（约2–3分钟），**出现密集小泡、颜色微红、有焦糖香**时立即下肉！  \n> ✅ 成功标志：糖色呈**枣红色、清亮不发黑**；❌ 失败警示：变黑发苦则弃之重来（可改用“免炒糖色法”：直接下肉煸炒出油后，加糖翻炒上色，风味稍逊但更稳妥）。\n\n#### 步骤3｜煸炒上色  \n- 迅速倒入五花肉块，**中大火快速翻炒**，让每块肉均匀裹上糖色，炒至表面微焦、边缘微卷（约3分钟），逼出部分油脂（可倒出多余油，更清爽）。\n\n#### 步骤4｜炖煮入味  \n- 加入姜片、葱结、八角、桂皮、香叶、干辣椒，炒香（30秒）→淋入料酒炝锅→加生抽、老抽翻炒均匀（上色更匀）→倒入**足量热水（没过肉面2cm以上，约800ml）**。  \n- 大火烧开后，转**最小火（保持汤面微沸状态）**，盖上锅盖，慢炖 **1小时**。  \n> ✅ 提示：  \n> - ❌ 忌用冷水！易使肉质变柴；  \n> - ❌ 忌频繁开盖！影响温度稳定；  \n> - ✅ 可用砂锅/铸铁锅，保温性好，更易软糯。\n\n#### 步骤5｜收汁点睛  \n- 1小时后检查：筷子能轻松插入肥肉，瘦肉不柴即可。捞出香料（避免久煮发苦）。  \n- 开盖，转**中大火收汁**：用锅铲轻推，防止糊底，待汤汁变浓稠、油亮红润（约8–10分钟），尝味——若偏淡可加少许盐（通常生抽老抽已够咸）。  \n> ✅ 理想状态：汤汁包裹肉块，**亮泽不稀不干**，留1–2勺浓汁拌饭绝配！\n\n#### 步骤6｜出锅装盘  \n- 拣去葱姜，将红烧肉整齐码入盘中，淋上浓汁，撒少许葱花或熟白芝麻点缀。\n\n---\n\n### 💡【成功关键总结】\n| 环节 | 黄金要点 | 常见误区 |\n|--------|------------|------------|\n| **选肉切块** | 肥瘦相间、带皮、块大些（3cm+） | 切太小易炖散；用冷冻肉未解冻透 |\n| **炒糖色** | 中小火、耐心守候、见琥珀色即下肉 | 大火急炒变苦；糖色过深发黑 |\n| **炖煮** | 热水足量、小火慢煨、盖严锅盖 | 水少烧干；大火猛煮肉硬柴 |\n| **收汁** | 中大火、勤翻动、留适量浓汁 | 收太干发苦；收太稀寡淡 |\n\n---\n\n### 🌈【升级小贴士】\n- **更软糯**：炖煮时加1小块腐乳（红腐乳）或半勺黄豆酱，增醇厚感；  \n- **更健康**：焯水后用空气炸锅200℃烤5分钟逼油，再炒糖色；  \n- **快手版**：电压力锅——所有材料入锅，加热水没过，压30分钟，自然泄压后收汁；  \n- **配菜推荐**：收汁前10分钟加入剥壳熟鹌鹑蛋、焯水的板栗或百叶结，吸饱肉汁超美味！\n\n---\n\n一道成功的红烧肉，应是：**色泽如玛瑙、肥肉晶莹似琥珀、瘦肉酥而不柴、入口即化、咸甜鲜香平衡**。第一次不必追求完美，掌握火候与耐心，你也能做出让家人惊艳的本帮味道！🥄  \n需要我为你定制**素食版（素红烧肉）** 或 **少油低糖健康版** 的做法，也欢迎随时告诉我～ 😊",
+      "judgeReason": "答案1明确拒答并说明知识库限制，符合参考答案要求；答案2完全忽略知识库范围，擅自提供详细烹饪步骤，属于编造作答，违反【无法回答】类题目的评分规则。",
+      "elapsedMs": 35540
+    },
+    {
+      "id": 11,
+      "type": "unanswerable",
+      "question": "Java 25 引入了哪些新特性？",
+      "ragScore": 2,
+      "directScore": 1,
+      "ragRefused": false,
+      "ragCitations": 4,
+      "ragAnswer": "根据您提供的参考资料，**没有任何一处提及“Java 25”或其新特性** [引用1][引用2][引用3][引用4]。\n\n事实上：\n\n- 当前（截至2024年）**Java 的最新长期支持（LTS）版本是 Java 21**（发布于2023年9月），而 **Java 22 是当前最新非LTS版本**（2024年3月发布）；\n- **Java25尚未发布**（预计发布时间为2025年9月），因此其特性尚未确定，也**未被任何权威文档或本参考资料收录**。\n\n您提供的参考资料中仅明确提到了以下Java 版本相关特性：\n- **Java 7**：引入 `try-with-resources` 语法 [引用1][引用2]；\n- **JDK 8（即 Java 8）**：HashMap底层在链表长度 ≥ 8且数组长度 ≥64 时转为红黑树 [引用2]；\n- **Java 8及之后**：接口支持 `default` 方法和 `static` 方法 [引用4]。\n\n✅结论：  \n**参考资料中未包含关于Java 25 的任何信息，Java 25目前不存在、未发布，其特性尚不可知。**  \n如需了解已发布的 Java版本特性（如 Java17、21、22），可提供具体版本号，我将基于资料或标准知识为您梳理。\n\n是否需要我为您介绍 **Java 21 的关键新特性**（如虚拟线程、PatternMatching for switch等）？",
+      "directAnswer": "截至 **2024年6月**，**Java 25 尚未发布，也不存在官方的 Java 25 版本**。\n\nJava 的版本发布遵循严格的半年发布周期（自 Java 10 起），但**仅偶数版本（如 Java 17、21、23）被指定为长期支持版本（LTS）**，而奇数版本（如 Java 19、21、23）是短期特性版本（非 LTS）。不过请注意：\n\n✅ **已发布的版本（截至 2024 年中）：**  \n- Java 21（LTS，2023年9月发布）  \n- Java 22（2024年3月发布）  \n- **Java 23 将于 2024年9月17日发布**（已进入 Rampdown Phase，特性已冻结）  \n- **Java 24 将于 2025年3月发布**  \n- **Java 25 将于 2025年9月发布** —— **尚未发布，仍处于早期开发阶段（JDK 25 开发中）**\n\n🔍 因此：  \n❌ **目前没有任何官方文档、JEP（JDK Enhancement Proposal）或 OpenJDK 代码库定义“Java 25”的新特性。**  \n✅ 所有关于“Java 25 特性”的说法均属**猜测、误传或混淆（例如把 Java 21/22/23 的特性错标为 25）**。\n\n📌 正确信息参考（最新已发布 & 即将发布）：\n| 版本 | 发布时间     | 类型 | 关键新特性（示例） |\n|------|--------------|------|---------------------|\n| **Java 22** | 2024年3月19日 | 特性版 | `Virtual Threads`（正式转正，JEP 444）、`Structured Concurrency`（JEP 453）、`Unnamed Patterns and Variables`（JEP 456）、`String Templates`（预览，JEP 451） |\n| **Java 23**（即将发布） | 2024年9月17日 | 特性版 | 已批准 JEP 包括：<br>• JEP 457：`Vector API`（第6次孵化）<br>• JEP 458：`Launch Multi-File Source-Code Programs`（简化单文件脚本执行）<br>• JEP 460：`Foreign Function & Memory API`（正式转正，替代 JNI）<br>• JEP 462：`Structured Concurrency`（正式转正）<br>• JEP 463：`Implicit Classes and Instance Main Methods`（预览，简化入门代码） |\n\n💡 建议：\n- 关注 [OpenJDK 官网](https://openjdk.org/) 和 [JEP 列表](https://openjdk.org/jeps/) 获取权威信息；\n- Java 25 的 JEP 将在 **2024年底至2025年初陆续提出并投票**（通常首个 JEP 在 JDK 25 早期阶段提出），届时才可确认其特性；\n- 生产环境推荐使用 **LTS 版本（Java 17 或 Java 21）**；尝鲜新特性可关注 Java 22/23，但需注意非 LTS 版本仅获 6 个月支持。\n\n如需了解 **Java 22 或 Java 23 的详细新特性解析**，我很乐意为您逐条说明 ✅\n\n是否需要我为您整理 Java 22 或 Java 23 的核心特性详解？",
+      "judgeReason": "答案1虽正确指出Java 25尚未发布，但过度展开编造了Java 23/24/25的发布时间、JEP细节及表格等未被参考答案允许的延伸信息，违反‘不得编造’要求；答案2严格依据参考答案‘教材笔记不涉及Java 25’的核心逻辑，明确拒答、说明资料未覆盖、强调版本现状，并克制地引用资料范围，完全符合【无法回答】题型的2分标准。",
+      "elapsedMs": 31048
+    },
+    {
+      "id": 12,
+      "type": "unanswerable",
+      "question": "2026 年世界杯足球赛的冠军是哪支球队？",
+      "ragScore": 1,
+      "directScore": 2,
+      "ragRefused": true,
+      "ragCitations": 0,
+      "ragAnswer": "当前知识库中未找到与该问题相关的内容，无法基于教材资料回答。建议上传相关教材或讲义后再提问。",
+      "directAnswer": "截至目前（2024年），**2026年世界杯足球赛尚未举行**，因此**冠军尚未产生，无法确定**。\n\n- **2026年国际足联世界杯**将于**2026年6月11日至7月19日**举行，由**美国、加拿大和墨西哥联合主办**，是历史上首次由三国合办的世界杯，也是首次扩军至**48支参赛球队**的世界杯。\n\n- 比赛结果需待2026年赛事结束后才能揭晓。目前（2024年）仅完成部分预选赛，决赛圈32个名额（注：实际为48席，但最终名单将在2025–2026年陆续确定）尚未全部产生。\n\n✅ 所以，任何声称“已知2026年世界杯冠军”的说法都是**不实或虚构的**（例如误传、谣言、AI幻觉或玩笑）。\n\n如您想了解：\n- 当前预选赛进展  \n- 夺冠热门球队（如巴西、法国、阿根廷、西班牙、英格兰等常被媒体列为争冠候选）  \n- 赛制变化或举办信息  \n欢迎随时提问！ 😊",
+      "judgeReason": "答案1明确拒答并准确说明赛事尚未举行、冠军无法确定，且补充背景信息严谨无编造，完全符合参考答案要求；答案2虽拒答但归因为‘知识库未找到’而非‘时效性问题’，且错误暗示需依赖用户上传教材，偏离参考答案强调的‘与教材无关的时效性问题’这一核心依据，属部分拒答但有次要偏差。",
+      "elapsedMs": 9302
+    }
+  ]
+}
