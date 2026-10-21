@@ -32,7 +32,6 @@
             <div class="feature-icon">📚</div>
             <h3>知识库管理</h3>
             <p>上传教材 / 讲义，构建专属知识库</p>
-            <el-tag type="success" size="small">已上线 · 点击进入</el-tag>
           </el-card>
         </el-col>
         <el-col :span="8">
@@ -40,7 +39,6 @@
             <div class="feature-icon">💬</div>
             <h3>智能问答</h3>
             <p>基于教材内容回答，标注引用出处</p>
-            <el-tag type="success" size="small">已上线 · 点击进入</el-tag>
           </el-card>
         </el-col>
         <el-col :span="8">
@@ -48,7 +46,6 @@
             <div class="feature-icon">📝</div>
             <h3>练习题生成</h3>
             <p>AI 出题 + 自动判分 + 答案解析</p>
-            <el-tag type="success" size="small">已上线 · 点击进入</el-tag>
           </el-card>
         </el-col>
       </el-row>
