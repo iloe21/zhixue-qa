@@ -25,7 +25,7 @@
         <p>上传教材构建知识库，获得带引用溯源的 AI 学习问答</p>
       </div>
 
-      <!-- 功能模块卡片（随开发逐步点亮） -->
+      <!-- 功能模块卡片 -->
       <el-row :gutter="20" class="feature-row">
         <el-col :span="8">
           <el-card class="feature-card clickable" shadow="hover" @click="router.push('/kbs')">
@@ -52,52 +52,23 @@
           </el-card>
         </el-col>
       </el-row>
-
-      <!-- 系统状态卡片 -->
-      <el-card class="status-card" shadow="hover">
-        <template #header>
-          <span>🔧 系统状态（工程验收）</span>
-        </template>
-        <el-button type="primary" :loading="loading" @click="checkHealth">测试后端连接</el-button>
-        <el-tag v-if="health" type="success" size="large" style="margin-left: 12px">
-          ✅ 后端正常 · 数据库 {{ health.database }} · {{ health.tables }} 张表 · {{ health.time }}
-        </el-tag>
-        <el-alert v-if="error" :title="error" type="error" show-icon style="margin-top: 12px" />
-      </el-card>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import request from '../utils/request'
 import { useUserStore } from '../store/user'
 
 const router = useRouter()
 const userStore = useUserStore()
 
-const health = ref(null)
-const error = ref('')
-const loading = ref(false)
-
 onMounted(() => {
   // 刷新用户信息（校正本地缓存；token 失效时拦截器会自动跳登录页）
   userStore.fetchMe().catch(() => {})
 })
-
-async function checkHealth() {
-  loading.value = true
-  error.value = ''
-  try {
-    health.value = await request.get('/health')
-  } catch (e) {
-    error.value = '后端连接失败：请确认后端已启动（localhost:8080）'
-  } finally {
-    loading.value = false
-  }
-}
 
 function onLogout() {
   userStore.logout()
@@ -193,8 +164,5 @@ function onLogout() {
   color: #909399;
   font-size: 13px;
   margin: 0 0 12px;
-}
-.status-card {
-  border-radius: 12px;
 }
 </style>
