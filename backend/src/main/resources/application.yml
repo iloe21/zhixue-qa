@@ -45,12 +45,9 @@ spring:
           writetimeout: 10000
 
   # ===== Spring AI（大模型接入）=====
-  # 当前为占位配置，工程骨架阶段不调用大模型。
-  # 任务 #5 开发问答功能前：
-  #   1. 注册 DeepSeek（https://platform.deepseek.com）拿 API Key
-  #   2. 设置环境变量 AI_API_KEY（不要直接改本文件提交 Git）
-  #   3. Embedding 模型 DeepSeek 不提供，届时用 spring.ai.openai.embedding.api-key /
-  #      base-url 单独指向智谱或百炼（DashScope 兼容模式）
+  # 默认指向阿里百炼 OpenAI 兼容模式（Chat=qwen-plus + Embedding=text-embedding-v4），
+  # 真实 API Key 写在 application-local.yml（已 gitignore）或环境变量 AI_API_KEY。
+  # base-url 为 OpenAI 兼容协议入口，可整体切换到 DeepSeek 等其他兼容服务。
   ai:
     openai:
       api-key: ${AI_API_KEY:sk-placeholder}
