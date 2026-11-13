@@ -48,7 +48,8 @@
         <template v-else>
           <div v-for="(m, i) in messages" :key="i" :class="['msg-row', m.role]">
             <div class="bubble">
-              <div class="msg-content">{{ m.content }}</div>
+              <div v-if="m.role === 'assistant'" class="msg-content markdown-body" v-html="renderMd(m.content)"></div>
+              <div v-else class="msg-content">{{ m.content }}</div>
               <div v-if="m.role === 'assistant' && m.citationList?.length" class="citations">
                 <div class="cit-title">📎 引用来源（点击查看原文）：</div>
                 <el-tag
@@ -67,7 +68,10 @@
           <!-- 流式生成中的气泡 -->
           <div v-if="streaming" class="msg-row assistant">
             <div class="bubble">
-              <div class="msg-content">{{ streamText }}<span class="cursor-blink">▍</span></div>
+              <div class="msg-content markdown-body">
+                <div v-html="renderMd(streamText)"></div>
+                <span class="cursor-blink">▍</span>
+              </div>
             </div>
           </div>
         </template>
@@ -130,8 +134,11 @@
 
 <script setup>
 import { ref, nextTick, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js/lib/common'   // 常用语言子集，控制分包体积
+import 'highlight.js/styles/github.css'
 import {
   createConversation, listConversations, getConversation,
   renameConversation, deleteConversation, listMessages, chatStream
@@ -139,6 +146,27 @@ import {
 import { listKbs, getChunk } from '../api/kb'
 
 const router = useRouter()
+const route = useRoute()
+
+// ===== Markdown 渲染（AI 回答支持分点/表格/代码高亮）=====
+// html:false 关闭原始 HTML 透传，避免模型输出注入页面（XSS 防护）
+const md = new MarkdownIt({
+  html: false,
+  breaks: true,
+  linkify: false,
+  highlight(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        return `<pre class="hljs"><code>${hljs.highlight(code, { language: lang, ignoreIllegals: true }).value}</code></pre>`
+      } catch (e) { /* 落到默认转义 */ }
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(code)}</code></pre>`
+  }
+})
+
+function renderMd(text) {
+  return md.render(text || '')
+}
 
 // ===== 会话列表 =====
 const conversations = ref([])
@@ -306,7 +334,14 @@ async function showChunk(cit) {
   }
 }
 
-onMounted(loadConversations)
+onMounted(async () => {
+  await loadConversations()
+  // 深链恢复：/chat?conv=<id> 直接打开指定会话
+  const convParam = Number(route.query.conv)
+  if (convParam && conversations.value.some(c => c.id === convParam)) {
+    selectConv(convParam)
+  }
+})
 </script>
 
 <style scoped>
@@ -438,6 +473,81 @@ onMounted(loadConversations)
 .msg-content {
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* ===== AI 回答 Markdown 排版（v-html 内容需 :deep 穿透）===== */
+.markdown-body {
+  white-space: normal;
+}
+.markdown-body :deep(p) {
+  margin: 0 0 8px;
+}
+.markdown-body :deep(p:last-child) {
+  margin-bottom: 0;
+}
+.markdown-body :deep(h1),
+.markdown-body :deep(h2),
+.markdown-body :deep(h3),
+.markdown-body :deep(h4) {
+  margin: 12px 0 8px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.markdown-body :deep(h1) { font-size: 17px; }
+.markdown-body :deep(h2) { font-size: 16px; }
+.markdown-body :deep(h3),
+.markdown-body :deep(h4) { font-size: 15px; }
+.markdown-body :deep(ul),
+.markdown-body :deep(ol) {
+  margin: 4px 0 8px;
+  padding-left: 22px;
+}
+.markdown-body :deep(li) {
+  margin-bottom: 4px;
+}
+.markdown-body :deep(strong) {
+  color: #4f46e5;
+}
+.markdown-body :deep(code):not(pre code) {
+  background: #f2f3f7;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 13px;
+  color: #c7254e;
+}
+.markdown-body :deep(pre.hljs) {
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: #f6f8fa;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.markdown-body :deep(pre.hljs code) {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+.markdown-body :deep(table) {
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.markdown-body :deep(th),
+.markdown-body :deep(td) {
+  border: 1px solid #e4e7ed;
+  padding: 6px 10px;
+}
+.markdown-body :deep(th) {
+  background: #f5f7fa;
+}
+.markdown-body :deep(blockquote) {
+  margin: 8px 0;
+  padding: 6px 12px;
+  border-left: 3px solid #c7d2fe;
+  background: #f8faff;
+  color: #606266;
 }
 .cursor-blink {
   animation: blink 0.9s infinite;
