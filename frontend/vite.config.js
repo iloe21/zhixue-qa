@@ -8,12 +8,12 @@ export default defineConfig({
     proxy: {
       // 后端 REST API
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8081',
         changeOrigin: true
       },
       // 上传文件静态资源
       '/uploads': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8081',
         changeOrigin: true
       }
     }
