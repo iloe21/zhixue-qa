@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * RAG 问答服务（设计文档 2.3 流程二 + 5.2~5.4 关键技术方案）
  *
- * 链路：向量检索(Top-K=5/阈值0.5/按知识库范围过滤)
+ * 链路：向量检索(Top-K 与阈值见 app.rag 配置，默认 5/0.28，按知识库范围过滤)
  *      → 无结果拒答(幻觉抑制)
  *      → 组装提示词(编号引用+会话历史)
  *      → 大模型流式生成 → SSE 推送(delta/citations/done/error)
@@ -146,7 +146,8 @@ public class RagChatService {
     }
 
     // ===== 提示词工程（设计文档 5.3：幻觉抑制模板）=====
-    private String buildSystemPrompt(List<Document> docs) {
+    // 包级可见：供单元测试直接校验引用编号与提示词组装的对齐关系
+    String buildSystemPrompt(List<Document> docs) {
         StringBuilder sb = new StringBuilder();
         sb.append("你是一名严谨的学习助手。请仅根据下方\"参考资料\"回答用户问题。\n\n");
         sb.append("要求：\n");
@@ -166,7 +167,8 @@ public class RagChatService {
         return sb.toString();
     }
 
-    private List<Citation> buildCitations(List<Document> docs) {
+    // 包级可见：供单元测试直接校验引用条目与检索结果的映射
+    List<Citation> buildCitations(List<Document> docs) {
         List<Citation> list = new ArrayList<>();
         int ref = 1;
         for (Document d : docs) {

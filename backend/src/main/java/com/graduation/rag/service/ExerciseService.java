@@ -270,8 +270,8 @@ public class ExerciseService {
         for (ExerciseQuestion q : qs) {
             String given = answerMap.get(q.getId());
             q.setUserAnswer(given);
-            boolean correct = q.getType() == 2 ? gradeBlank(q.getAnswer(), given)
-                                               : gradeChoice(q.getAnswer(), given);
+            boolean correct = q.getType() == 2 ? ExerciseGrader.gradeBlank(q.getAnswer(), given)
+                                               : ExerciseGrader.gradeChoice(q.getAnswer(), given);
             q.setIsCorrect(correct ? 1 : 0);
             if (correct) {
                 total += q.getScore();
@@ -285,41 +285,4 @@ public class ExerciseService {
         return detail(id, user);
     }
 
-    /** 选择题：去空格忽略大小写精确匹配 */
-    private boolean gradeChoice(String correct, String given) {
-        return given != null && correct != null
-                && correct.trim().equalsIgnoreCase(given.trim());
-    }
-
-    /** 填空题：多答案（| 分隔）任一匹配即对；归一化=全角转半角+去空格+小写 */
-    private boolean gradeBlank(String correct, String given) {
-        if (given == null || correct == null) {
-            return false;
-        }
-        String g = normalize(given);
-        if (g.isEmpty()) {
-            return false;
-        }
-        for (String alt : correct.split("\\|")) {
-            if (!normalize(alt).isEmpty() && normalize(alt).equals(g)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** 全角→半角 + 去所有空白 + 小写（填空题宽容判分） */
-    private String normalize(String s) {
-        StringBuilder sb = new StringBuilder();
-        for (char c : s.trim().toCharArray()) {
-            if (c == '　') {
-                sb.append(' ');
-            } else if (c >= '！' && c <= '～') {
-                sb.append((char) (c - 0xFEE0));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString().toLowerCase().replaceAll("\\s+", "");
-    }
 }
