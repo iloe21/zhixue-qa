@@ -23,6 +23,7 @@ file/项目介绍.md
 # ===== 环境变量与密钥（API Key 绝不入库）=====
 .env
 .env.*
+!.env.example
 backend/src/main/resources/application-local.yml
 
 # ===== 运行时数据 =====

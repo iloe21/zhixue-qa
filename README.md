@@ -2,7 +2,7 @@
 
 > 基于 **RAG（检索增强生成）** 的智能学习问答系统 —— 上传你的教材，获得**带引用溯源**的 AI 答疑，还能一键生成练习题并自动判分。
 
-![Java](https://img.shields.io/badge/Java-21-orange) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen) ![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.8-blue) ![Vue](https://img.shields.io/badge/Vue-3.5-42b883) ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1) ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Java](https://img.shields.io/badge/Java-21-orange) ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.16-brightgreen) ![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.8-blue) ![Vue](https://img.shields.io/badge/Vue-3.5-42b883) ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479a1) ![CI](https://github.com/iloe21/zhixue-qa/actions/workflows/ci.yml/badge.svg) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ## 💡 为什么做这个
 
@@ -140,6 +140,17 @@ npm run dev                   # 打开 http://localhost:5173
 - 管理员：`admin / admin123`（首次启动自动创建，**请立即修改密码**）
 - 或自行注册学生账号
 
+### 6. Docker 一键部署（可选）
+
+不装 JDK/Node/MySQL 也能跑，三个服务（MySQL + 后端 + Nginx 前端）一条命令拉起：
+
+```bash
+cp .env.example .env          # 填入 AI_API_KEY（阿里百炼）
+docker compose up -d --build  # 打开 http://localhost:8080
+```
+
+Nginx 容器统一入口：静态资源 + `/api`、`/uploads` 反代后端（SSE 已关闭缓冲）。MySQL 数据、上传文档、向量库文件均为命名卷，`docker compose down` 不丢数据。
+
 ## ⚙️ 可调参数
 
 | 配置项 | 说明 | 默认值 |
@@ -152,6 +163,20 @@ npm run dev                   # 打开 http://localhost:5173
 | `jwt.expiration` | Token 有效期（毫秒） | 86400000 |
 
 > 阈值 0.28 来自实测校准：text-embedding-v4 下相关内容得分 0.31~0.43、无关内容 0.18~0.26。
+
+## 🧪 单元测试与 CI
+
+`backend/src/test` 覆盖四个核心契约（30 用例，`mvn test` 或 CI 自动执行）：
+
+| 测试类 | 锁定行为 |
+|--------|----------|
+| `TextChunkSplitterTest` | 窗口切分、overlap 重叠、段落边界回退、行尾归一化 |
+| `ExerciseGraderTest` | 选择题大小写匹配、填空题多答案/全半角/空白归一化 |
+| `ExerciseSubmitTest` | 服务端累分、一次性提交、归属校验、答案不下发 |
+| `RagChatServiceCitationTest` | 提示词 `[引用N]` 编号与 Citation/chunkIndex 对齐 |
+| `JwtUtilTest` | claims 契约、篡改/过期/异密钥拒收 |
+
+GitHub Actions（`.github/workflows/ci.yml`）在每次 push/PR 时跑 `mvn test`，徽章见页首。
 
 ## 🧪 对比实验
 
@@ -173,12 +198,15 @@ TOKEN=<你的token> node experiments/run-experiment.mjs
 │       ├── service/          # 认证/验证码/密码重置/知识库/文档解析/RAG问答/练习/管理
 │       ├── security/         # JwtUtil/JwtAuthenticationFilter
 │       ├── entity/ mapper/ dto/ exception/ util/(自研文本切分器)
-│       └── resources/        # application.yml / init.sql(9张表)
-├── frontend/                 # Vue 3 前端
+│       ├── src/test/          # 单元测试（切分/判分/引用对齐/JWT）
+│       └── resources/         # application.yml / init.sql(9张表)
+├── frontend/                 # Vue 3 前端（含容器化 Dockerfile + nginx.conf）
 │   └── src/
 │       ├── api/              # auth/kb/chat/exercise/admin 接口封装
 │       ├── views/            # 登录/注册/首页/知识库×2/问答/练习×2/管理后台×3
 │       ├── store/ router/ utils/
+├── .github/workflows/ci.yml  # push/PR 自动跑后端单元测试
+├── docker-compose.yml        # MySQL+后端+前端一键部署
 ├── experiments/              # RAG vs 直接问答对比实验脚本
 ├── testdata/                 # 测试文档/题集/实验结果
 └── file/                     # 设计文档/实验报告
@@ -207,7 +235,7 @@ Spring Boot 3.5 · Spring AI 1.1（OpenAI 兼容接入阿里百炼）· Spring S
 
 - [ ] AI 回答 Markdown 渲染 + 代码高亮
 - [ ] 暗色模式
-- [ ] Docker Compose 一键部署
+- [x] Docker Compose 一键部署
 - [ ] 对话导出 Markdown
 - [ ] 向量库升级 pgvector/Milvus（大数据量场景）
 - [ ] 重排序（Rerank）提升检索精度
