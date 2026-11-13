@@ -24,7 +24,7 @@
 ## ✨ 功能特性
 
 - 📚 **知识库管理** —— 上传 PDF / Word / TXT / Markdown 教材，自动完成 `解析 → 切分 → 向量化` 入库；支持私有库与管理员维护的公共课程库
-- 💬 **智能问答** —— 多轮对话、SSE 流式输出（打字机效果）、可跨多个知识库检索
+- 💬 **智能问答** —— 多轮对话、SSE 流式输出（打字机效果）、回答 Markdown 渲染 + 代码高亮、可跨多个知识库检索
 - 🔍 **引用溯源** —— 回答标注 `[引用N]`，点击引用卡片查看教材原文片段与相关度得分
 - 🛡️ **幻觉抑制双防线** —— 相似度阈值拒答（检索层）+ 提示词忠实性约束（生成层）
 - 📝 **练习题生成** —— AI 基于教材片段出选择题/填空题，在线作答、服务端自动判分、附解析与出题出处
@@ -72,7 +72,15 @@ flowchart TB
 
 ## 📸 界面预览
 
-> 截图待补充：登录页（验证码+找回密码）/ 知识库详情（上传+解析状态）/ 问答页（流式+引用卡片）/ 练习判分 / 管理后台
+| 登录（图形验证码 + 找回密码） | 智能问答（Markdown 渲染 + 引用溯源卡片） |
+|:---:|:---:|
+| ![登录页](docs/screenshots/01-login.png) | ![问答页](docs/screenshots/05-chat.png) |
+| **知识库详情（上传 + 解析状态）** | **练习判分（得分 + 解析 + 出题出处）** |
+| ![知识库详情](docs/screenshots/04-kb-detail.png) | ![练习判分](docs/screenshots/07-exercise-result.png) |
+| **管理后台仪表盘（八维统计）** | **用户管理** |
+| ![管理后台](docs/screenshots/08-admin-dashboard.png) | ![用户管理](docs/screenshots/09-admin-users.png) |
+
+> 截图由 `frontend/scripts/capture-screenshots.mjs` 无头浏览器自动生成（复用本机 Edge，登录态经 localStorage 注入）。
 
 ## 🚀 快速开始
 
@@ -233,7 +241,7 @@ Spring Boot 3.5 · Spring AI 1.1（OpenAI 兼容接入阿里百炼）· Spring S
 
 ## 🗺️ Roadmap
 
-- [ ] AI 回答 Markdown 渲染 + 代码高亮
+- [x] AI 回答 Markdown 渲染 + 代码高亮
 - [ ] 暗色模式
 - [x] Docker Compose 一键部署
 - [ ] 对话导出 Markdown
